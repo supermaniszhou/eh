@@ -97,6 +97,7 @@ public class AccessSetingDaoImpl implements AccessSetingDao {
                     sql.append(" and s.ORG_ACCOUNT_ID =" + value);
                 }
             }
+
             if ("name".equals(key)) {
                 if (!"".equals(value) && null != value) {
                     sql.append(" and (s.name like '%" + value + "%' or s.levelname like '%"+value+"%')");
