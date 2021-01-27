@@ -45,26 +45,35 @@ public class AccessSetingManagerImpl implements AccessSetingManager {
         /********过滤和条件搜索*******/
         Map queryParams = new HashMap<String, Object>();
         Boolean enabled = null;
+        queryParams.put("page", params.get("page")+"");
+        queryParams.put("pagesize", params.get("pagesize")+"");
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             String key = entry.getKey();
-            String value = (String) entry.getValue();
 
             if ("accountId".equals(key)) {
+                String value = (String) entry.getValue();
+
                 if (!"".equals(value) && null != value) {
                     queryParams.put("accountId", value);
                 }
             }
             if ("name".equals(key)) {
+                String value = (String) entry.getValue();
+
                 if (!"".equals(value) && null != value) {
                     queryParams.put("name", value);
                 }
             }
             if ("departmentId".equals(key)) {
+                String value = (String) entry.getValue();
+
                 if (!"".equals(value) && null != value) {
                     queryParams.put("departmentId", value);
                 }
             }
             if ("loginName".equals(key)) {
+                String value = (String) entry.getValue();
+
                 if (!"".equals(value) && null != value) {
                     queryParams.put("loginName", value);
                 }

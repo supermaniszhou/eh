@@ -32,10 +32,10 @@
 </head>
 <body>
 <div class="content_wrap">
-    <div id="nav" style="border: 1px solid #90d7bb;margin-left: 10px;overflow-y: auto;">
+    <div id="nav" style="border: 1px solid #90d7bb;margin-left: 10px;overflow-y: auto;height: 94%;">
         <ul id="treeDemo" class="ztree"></ul>
     </div>
-    <div style="margin-left: 10px;border: 1px solid #90d7bb;float: left;width: 72%;height: 90%;background-color: #fdfffd;">
+    <div style="margin-left: 10px;border: 1px solid #90d7bb;float: left;width: 72%;height: 94%;background-color: #fdfffd;">
         <div class="layui-card" style="margin-top: 0px">
             <div class="layui-table-header">
                 <div style="line-height: 30px;height: 30px;padding-left: 20px;">
@@ -51,7 +51,7 @@
                        placeholder="姓名" class="layui-input">
             </div>
             <button class="common_button" id="queryMember">查询</button>
-            <button class="common_button" id="queryAll">显示所有</button>
+<%--            <button class="common_button" id="queryAll">显示所有</button>--%>
             <button class="common_button common_button_emphasize" id="setConfig">设置</button>
         </div>
         <table id="memberTable" lay-filter="memberTableFilter"></table>
@@ -74,7 +74,7 @@
             , url: '/seeyon/ext/accessSetting.do?method=getMemberByDepartmentId'
             // , height: 550
             , page: true //开启分页
-            , limit: 20
+            , limit: 10
             , cols: [[ //表头
                 {type: 'checkbox'},
                 {field: 'name', title: '姓名', width: '20%', sort: true},
