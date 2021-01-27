@@ -82,14 +82,19 @@
                 {field: 'name', title: '所属分类', width: '30%', sort: true},
                 {field: 'p1', title: '是否允许', width: '30%', sort: true}
             ]]
-            , where: {}
+            , where: {
+                time:new Date().getTime()
+
+            }
         });
         $("#queryAll").bind('click', function () {
             //执行重载
             table.reload('templateTableId', {
                 where: {
                     categoryId: "",
-                    subject: ""
+                    subject: "",
+                    time:new Date().getTime()
+
                 }
             });
         });
@@ -98,7 +103,9 @@
             table.reload('templateTableId', {
                 where: {
                     categoryId: $("#categoryId").val() + "",
-                    subject: $("#memberInput").val()
+                    subject: $("#memberInput").val(),
+                    time:new Date().getTime()
+
                 }
             });
         });
@@ -139,7 +146,9 @@
             table.reload('templateTableId', {
                 where: {
                     categoryId: id + "",
-                    subject: ""
+                    subject: "",
+                    time:new Date().getTime()
+
                 }
             });
         }

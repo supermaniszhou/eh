@@ -83,7 +83,8 @@
                 {field: 'dayNum', title: '最近天数', width: '20%', sort: true}
             ]]
             , where: {
-                name: ""
+                name: "",
+                time:new Date().getTime()
             }
         });
         $("#queryAll").bind('click', function () {
@@ -91,7 +92,9 @@
             table.reload('memberTableId', {
                 where: {
                     departmentId: "",
-                    name: ""
+                    name: "",
+                    time:new Date().getTime()
+
                 }
             });
         });
@@ -101,7 +104,9 @@
                 where: {
                     departmentId: $("#deptid").val().toString(),
                     name: $("#memberInput").val(),
-                    page:1
+                    page:1,
+                    time:new Date().getTime()
+
                 }
             });
         });
@@ -140,6 +145,8 @@
                 where: {
                     departmentId: id.toString(),
                     name: "",
+                    time:new Date().getTime()
+
                 }
             });
 
