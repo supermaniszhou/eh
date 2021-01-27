@@ -89,17 +89,17 @@ public class AccessSetingDaoImpl implements AccessSetingDao {
             String key = entry.getKey();
             String value = (String) entry.getValue();
             if ("accountId".equals(key)) {
-                if (!"".equals(value) &&  null != value) {
+                if (!"".equals(value) && null != value) {
                     sql.append(" and s.ORG_ACCOUNT_ID =" + value);
                 }
             }
             if ("name".equals(key)) {
-                if (!"".equals(value) &&  null != value) {
+                if (!"".equals(value) && null != value) {
                     sql.append(" and s.name like '%" + value + "%'");
                 }
             }
             if ("departmentId".equals(key)) {
-                if (!"".equals(value) &&  null != value) {
+                if (!"".equals(value) && null != value) {
                     sql.append(" and s.ORG_DEPARTMENT_ID = " + value);
                 }
             }
@@ -107,7 +107,9 @@ public class AccessSetingDaoImpl implements AccessSetingDao {
         }
         List<Map<String, Object>> result = null;
         try {
-            result = JDBCUtil.doQuery(sql.toString());
+            if (param.size() > 0) {
+                result = JDBCUtil.doQuery(sql.toString());
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

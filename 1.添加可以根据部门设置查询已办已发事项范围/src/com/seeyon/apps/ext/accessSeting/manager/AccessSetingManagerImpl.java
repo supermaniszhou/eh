@@ -50,16 +50,24 @@ public class AccessSetingManagerImpl implements AccessSetingManager {
             String value = (String) entry.getValue();
 
             if ("accountId".equals(key)) {
-                queryParams.put("accountId", value);
+                if (!"".equals(value) && null != value) {
+                    queryParams.put("accountId", value);
+                }
             }
             if ("name".equals(key)) {
-                queryParams.put("name", value);
+                if (!"".equals(value) && null != value) {
+                    queryParams.put("name", value);
+                }
             }
             if ("departmentId".equals(key)) {
-                queryParams.put("departmentId", value);
+                if (!"".equals(value) && null != value) {
+                    queryParams.put("departmentId", value);
+                }
             }
             if ("loginName".equals(key)) {
-                queryParams.put("loginName", value);
+                if (!"".equals(value) && null != value) {
+                    queryParams.put("loginName", value);
+                }
             }
         }
         List<ZorgMember> list = null;

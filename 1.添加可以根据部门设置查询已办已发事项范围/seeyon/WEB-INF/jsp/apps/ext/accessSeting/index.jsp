@@ -72,8 +72,9 @@
             id: 'memberTableId'
             , elem: '#memberTable'
             , url: '/seeyon/ext/accessSetting.do?method=getMemberByDepartmentId'
-            , height: 550
-            , page: false //开启分页
+            // , height: 550
+            , page: true //开启分页
+            , limit: 20
             , cols: [[ //表头
                 {type: 'checkbox'},
                 {field: 'name', title: '姓名', width: '20%', sort: true},
@@ -105,8 +106,8 @@
         });
         //打开设置页面
         $('#setConfig').on('click', function () {
-            var arr=layui.table.checkStatus('memberTableId').data;
-            if(arr.length>0){
+            var arr = layui.table.checkStatus('memberTableId').data;
+            if (arr.length > 0) {
                 layer.open({
                     type: 2,
                     id: 'setConfigId',
@@ -118,7 +119,7 @@
                     success: function (layero, index) {
                     }
                 });
-            }else {
+            } else {
                 layer.msg('请至少选择一条数据！', {icon: 6});
             }
         });

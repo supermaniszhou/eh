@@ -149,13 +149,16 @@ public class AccessSetingControlller extends BaseController {
      */
     public ModelAndView getMemberByDepartmentId(HttpServletRequest request, HttpServletResponse response) {
         try {
+            int page = Integer.parseInt(request.getParameter("page"));
+            int pagesize=Integer.parseInt(request.getParameter("limit"));
             User user = AppContext.getCurrentUser();
             String departmentId = request.getParameter("departmentId");
             if (null == departmentId || departmentId.equals("")) {
                 departmentId = "";
             }
             Map map = new HashMap<>();
-            map.put("accountId", user.getLoginAccount() + "");
+//            map.put("accountId", user.getLoginAccount() + "");
+            map.put("accountId", "");
             map.put("departmentId", departmentId);
             map.put("name", request.getParameter("name"));
             List<ZorgMember> list = null;
