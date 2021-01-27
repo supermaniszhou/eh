@@ -22,7 +22,7 @@ public class AccessSetingManagerImpl implements AccessSetingManager {
     }
 
     @Override
-    public List<Map<String, String>> getTemplateInfos(Map<String, String> map) {
+    public PageInfo<Map<String, String>> getTemplateInfos(Map<String, String> map) {
         return dao.getTemplateInfos(map);
     }
 

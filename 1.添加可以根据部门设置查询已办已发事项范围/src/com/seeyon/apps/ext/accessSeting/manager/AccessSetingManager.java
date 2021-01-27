@@ -28,7 +28,7 @@ public interface AccessSetingManager {
 
     List<TempTemplateStop> getTemplateStop(Map<String, Object> param);
 
-    List<Map<String,String>> getTemplateInfos(Map<String,String> map);
+    PageInfo<Map<String,String>> getTemplateInfos(Map<String,String> map);
 
     //*************************************************************
 

@@ -30,8 +30,12 @@ public class AccessSetingDaoImpl implements AccessSetingDao {
     }
 
     @Override
-    public List<Map<String, String>> getTemplateInfos(Map<String, String> params) {
-        String sql = "select w3.* from (select ct.*,nvl(s.P1,'-') p1 from (select c.id catid,c.name,t.subject,t.id from CTP_TEMPLATE_CATEGORY c, (select * from CTP_TEMPLATE where ORG_ACCOUNT_ID=" + params.get("orgAccountId") + " and IS_DELETE=0 and WORKFLOW_ID !=0 ) t where c.id=t.CATEGORY_ID) ct LEFT JOIN TEMP_TEMPLATE_STOP s on CT.id=s.TEMPLATE_ID) w3 where 1=1  ";
+    public PageInfo<Map<String, String>> getTemplateInfos(Map<String, String> params) {
+        int page = Integer.parseInt(params.get("page"));
+        int pagesize = Integer.parseInt(params.get("pagesize"));
+        PageInfo<Map<String, String>> pageInfo = new PageInfo<>();
+        String head = "select * from (";
+        String sql = "select rownum rn,w3.* from (select ct.*,nvl(s.P1,'-') p1 from (select c.id catid,c.name,t.subject,t.id from CTP_TEMPLATE_CATEGORY c, (select * from CTP_TEMPLATE where ORG_ACCOUNT_ID=" + params.get("orgAccountId") + " and IS_DELETE=0 and WORKFLOW_ID !=0 ) t where c.id=t.CATEGORY_ID) ct LEFT JOIN TEMP_TEMPLATE_STOP s on CT.id=s.TEMPLATE_ID) w3 where 1=1  ";
         for (Map.Entry<String, String> entry : params.entrySet()) {
             if (entry.getKey().equals("subject")) {
                 if (null != entry.getValue() && !"".equals(entry.getValue())) {
@@ -45,10 +49,12 @@ public class AccessSetingDaoImpl implements AccessSetingDao {
             }
 
         }
+        String foot = " ) t where t.rn >" + (page - 1) * pagesize + " and t.rn<=" + page * pagesize;
 
         List<Map<String, Object>> result = null;
         try {
-            result = JDBCUtil.doQuery(sql);
+            result = JDBCUtil.doQuery(head + sql + foot);
+            pageInfo.setTotal(JDBCUtil.doQuery(sql).size());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -62,7 +68,8 @@ public class AccessSetingDaoImpl implements AccessSetingDao {
             }
             nl.add(m);
         }
-        return nl;
+        pageInfo.setData(nl);
+        return pageInfo;
     }
 
     @Override
@@ -100,7 +107,7 @@ public class AccessSetingDaoImpl implements AccessSetingDao {
 
             if ("name".equals(key)) {
                 if (!"".equals(value) && null != value) {
-                    sql.append(" and (s.name like '%" + value + "%' or s.levelname like '%"+value+"%')");
+                    sql.append(" and (s.name like '%" + value + "%' or s.levelname like '%" + value + "%')");
                 }
             }
             if ("departmentId".equals(key)) {

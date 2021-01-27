@@ -60,8 +60,11 @@ public class AccessSetingControlller extends BaseController {
         params.put("categoryId", id);
         params.put("subject", request.getParameter("subject"));
         params.put("orgAccountId", Long.toString(user.getAccountId()));
-        List<Map<String, String>> list = manager.getTemplateInfos(params);
+        params.put("page", request.getParameter("page"));
+        params.put("pagesize", request.getParameter("limit"));
+        PageInfo pageInfo = manager.getTemplateInfos(params);
         List<Map<String, String>> nlist = new ArrayList<>();
+        List<Map<String ,String >> list=pageInfo.getData();
         for (int i = 0; i < list.size(); i++) {
             Map<String, String> val = list.get(i);
             switch (val.get("p1")) {
@@ -79,7 +82,7 @@ public class AccessSetingControlller extends BaseController {
         Map<String, Object> map2 = new HashMap<>();
         map2.put("code", 0);
         map2.put("message", "");
-        map2.put("count", nlist.size());
+        map2.put("count", pageInfo.getTotal());
         map2.put("data", nlist);
         JSONObject json = new JSONObject(map2);
         render(response, json.toJSONString());
