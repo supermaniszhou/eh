@@ -35,7 +35,7 @@
     <div id="nav" style="border: 1px solid #90d7bb;margin-left: 10px;overflow-y: auto;height: 94%;">
         <ul id="treeDemo" class="ztree"></ul>
     </div>
-    <div style="margin-left: 10px;border: 1px solid #90d7bb;float: left;width: 72%;height: 94%;background-color: #fdfffd;">
+    <div style="margin-left: 10px;border: 1px solid #90d7bb;float: left;width: 72%;height: 94%;overflow-y: auto;background-color: #fdfffd;">
         <div class="layui-card" style="margin-top: 0px">
             <div class="layui-table-header">
                 <div style="line-height: 30px;height: 30px;padding-left: 20px;">
@@ -72,7 +72,7 @@
             id: 'memberTableId'
             , elem: '#memberTable'
             , url: '/seeyon/ext/accessSetting.do?method=getMemberByDepartmentId'
-            // , height: 550
+            , height: 460
             , page: true //开启分页
             , limit: 10
             , cols: [[ //表头
