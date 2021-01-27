@@ -51,7 +51,7 @@
                        placeholder="姓名/职务" class="layui-input">
             </div>
             <button class="common_button" id="queryMember">查询</button>
-<%--            <button class="common_button" id="queryAll">显示所有</button>--%>
+            <%--            <button class="common_button" id="queryAll">显示所有</button>--%>
             <button class="common_button common_button_emphasize" id="setConfig">设置</button>
         </div>
         <table id="memberTable" lay-filter="memberTableFilter"></table>
@@ -74,6 +74,7 @@
             , url: '/seeyon/ext/accessSetting.do?method=getMemberByDepartmentId'
             , height: 450
             , page: true //开启分页
+            , method: 'post'
             , limit: 10
             , cols: [[ //表头
                 {type: 'checkbox'},
@@ -84,7 +85,7 @@
             ]]
             , where: {
                 name: "",
-                time:new Date().getTime()
+                time: new Date().getTime()
             }
         });
         $("#queryAll").bind('click', function () {
@@ -93,7 +94,7 @@
                 where: {
                     departmentId: "",
                     name: "",
-                    time:new Date().getTime()
+                    time: new Date().getTime()
 
                 }
             });
@@ -104,8 +105,8 @@
                 where: {
                     departmentId: $("#deptid").val().toString(),
                     name: $("#memberInput").val(),
-                    page:1,
-                    time:new Date().getTime()
+                    page: 1,
+                    time: new Date().getTime()
 
                 }
             });
@@ -145,7 +146,7 @@
                 where: {
                     departmentId: id.toString(),
                     name: "",
-                    time:new Date().getTime()
+                    time: new Date().getTime()
 
                 }
             });
