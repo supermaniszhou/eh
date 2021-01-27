@@ -83,6 +83,7 @@
                         var index = parent.layer.getFrameIndex(window.name);
                         parent.layer.close(index);
                         parent.layer.msg('设置成功！', {icon: 6})
+                        // parent.location.reload();
                     } else {
                         layer.msg('设置失败!请联系管理员', {icon: 5});
                     }
