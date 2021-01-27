@@ -5,6 +5,7 @@ import com.seeyon.apps.ext.accessSeting.dao.AccessSetingDaoImpl;
 import com.seeyon.apps.ext.accessSeting.po.DepartmentViewTimeRange;
 import com.seeyon.apps.ext.accessSeting.po.TempTemplateStop;
 import com.seeyon.apps.ext.accessSeting.po.ZorgMember;
+import com.seeyon.apps.ext.accessSeting.util.PageInfo;
 import com.seeyon.ctp.common.exceptions.BusinessException;
 
 import java.math.BigDecimal;
@@ -41,12 +42,12 @@ public class AccessSetingManagerImpl implements AccessSetingManager {
     }
 
     @Override
-    public List<ZorgMember> showPeople(Map<String, Object> params) throws BusinessException {
+    public PageInfo<ZorgMember> showPeople(Map<String, Object> params) throws BusinessException {
         /********过滤和条件搜索*******/
         Map queryParams = new HashMap<String, Object>();
         Boolean enabled = null;
-        queryParams.put("page", params.get("page")+"");
-        queryParams.put("pagesize", params.get("pagesize")+"");
+        queryParams.put("page", params.get("page") + "");
+        queryParams.put("pagesize", params.get("pagesize") + "");
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             String key = entry.getKey();
 
@@ -79,13 +80,13 @@ public class AccessSetingManagerImpl implements AccessSetingManager {
                 }
             }
         }
-        List<ZorgMember> list = null;
+        PageInfo<ZorgMember> pageInfo = null;
         try {
-            list = dao.getAllMemberPOByDeptId(queryParams, true, true);
+            pageInfo = dao.getAllMemberPOByDeptId(queryParams, true, true);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return list;
+        return pageInfo;
     }
 
     @Override

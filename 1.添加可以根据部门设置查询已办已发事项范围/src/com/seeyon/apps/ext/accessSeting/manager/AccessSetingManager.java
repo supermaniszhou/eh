@@ -3,6 +3,7 @@ package com.seeyon.apps.ext.accessSeting.manager;
 import com.seeyon.apps.ext.accessSeting.po.DepartmentViewTimeRange;
 import com.seeyon.apps.ext.accessSeting.po.TempTemplateStop;
 import com.seeyon.apps.ext.accessSeting.po.ZorgMember;
+import com.seeyon.apps.ext.accessSeting.util.PageInfo;
 import com.seeyon.ctp.common.exceptions.BusinessException;
 
 import java.util.List;
@@ -32,6 +33,6 @@ public interface AccessSetingManager {
     //*************************************************************
 
     //周刘成
-    List<ZorgMember> showPeople(Map<String,Object> params) throws BusinessException;
+    PageInfo<ZorgMember> showPeople(Map<String,Object> params) throws BusinessException;
 
 }

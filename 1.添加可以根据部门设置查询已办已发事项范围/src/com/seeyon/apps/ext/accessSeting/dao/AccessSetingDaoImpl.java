@@ -4,6 +4,7 @@ import com.seeyon.apps.ext.accessSeting.po.DepartmentViewTimeRange;
 import com.seeyon.apps.ext.accessSeting.po.TempTemplateStop;
 import com.seeyon.apps.ext.accessSeting.po.ZorgMember;
 import com.seeyon.apps.ext.accessSeting.util.JDBCUtil;
+import com.seeyon.apps.ext.accessSeting.util.PageInfo;
 import com.seeyon.ctp.common.i18n.ResourceUtil;
 import com.seeyon.ctp.util.DBAgent;
 import com.seeyon.ctp.util.JDBCAgent;
@@ -82,11 +83,11 @@ public class AccessSetingDaoImpl implements AccessSetingDao {
     //***********************************************************
 
     @Override
-    public List<ZorgMember> getAllMemberPOByDeptId(Map<String, Object> param, Boolean p1, Boolean p2) {
+    public PageInfo<ZorgMember> getAllMemberPOByDeptId(Map<String, Object> param, Boolean p1, Boolean p2) {
         int page = Integer.parseInt(param.get("page") + "");
         int pagesize = Integer.parseInt(param.get("pagesize") + "");
         StringBuilder sql = new StringBuilder();
-        sql.append("select * from ( ");
+        String head = "select * from ( ";
         sql.append("select rownum rn,s.* from (select mpl.*,nvl(d.DAY_NUM,'') DAY_NUM from (select m.ORG_DEPARTMENT_ID,m.ORG_ACCOUNT_ID,(select name from ORG_UNIT u where u.id=m.ORG_DEPARTMENT_ID) deptname,m.id,m.name,m.ORG_LEVEL_ID,l.name levelName,p.LOGIN_NAME from ORG_MEMBER m,ORG_LEVEL l,ORG_PRINCIPAL p where m.ORG_LEVEL_ID=l.id and p.MEMBER_ID=m.id and m.IS_ENABLE=1 ) mpl LEFT JOIN DEPARTMENT_VIEW_TIME_RANGE d on mpl.id=d.MEMBER_ID) s where 1=1 ");
         for (Map.Entry<String, Object> entry : param.entrySet()) {
             String key = entry.getKey();
@@ -108,12 +109,15 @@ public class AccessSetingDaoImpl implements AccessSetingDao {
             }
 
         }
-        sql.append(" ) t where t.rn >" + (page - 1) * pagesize + " and t.rn<=" + page * pagesize);
+        String foot = " ) t where t.rn >" + (page - 1) * pagesize + " and t.rn<=" + page * pagesize;
         List<Map<String, Object>> result = null;
+        String appendSql = head + sql.toString() + foot;
+        PageInfo<ZorgMember> pageInfo = new PageInfo<>();
         try {
             if (param.size() > 0) {
-                result = JDBCUtil.doQuery(sql.toString());
+                result = JDBCUtil.doQuery(appendSql);
             }
+            pageInfo.setTotal(JDBCUtil.doQuery(sql.toString()).size());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -132,7 +136,8 @@ public class AccessSetingDaoImpl implements AccessSetingDao {
                 rows.add(orgMember);
             }
         }
-        return rows;
+        pageInfo.setData(rows);
+        return pageInfo;
     }
 
     @Override

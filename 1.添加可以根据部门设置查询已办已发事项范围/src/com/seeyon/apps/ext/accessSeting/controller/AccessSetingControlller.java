@@ -7,6 +7,7 @@ import com.seeyon.apps.ext.accessSeting.manager.AccessSetingManagerImpl;
 import com.seeyon.apps.ext.accessSeting.po.DepartmentViewTimeRange;
 import com.seeyon.apps.ext.accessSeting.po.TempTemplateStop;
 import com.seeyon.apps.ext.accessSeting.po.ZorgMember;
+import com.seeyon.apps.ext.accessSeting.util.PageInfo;
 import com.seeyon.ctp.common.AppContext;
 import com.seeyon.ctp.common.ModuleType;
 import com.seeyon.ctp.common.authenticate.domain.User;
@@ -163,13 +164,13 @@ public class AccessSetingControlller extends BaseController {
             map.put("name", request.getParameter("name"));
             map.put("page", page);
             map.put("pagesize", pagesize);
-            List<ZorgMember> list = null;
-            list = manager.showPeople(map);
+            PageInfo<ZorgMember> pageInfo = null;
+            pageInfo = manager.showPeople(map);
             Map<String, Object> map2 = new HashMap<>();
             map2.put("code", 0);
             map2.put("message", "");
-            map2.put("count", list.size());
-            map2.put("data", list);
+            map2.put("count", pageInfo.getTotal());
+            map2.put("data", pageInfo.getData());
             JSONObject json = new JSONObject(map2);
             render(response, json.toJSONString());
         } catch (Exception e) {
