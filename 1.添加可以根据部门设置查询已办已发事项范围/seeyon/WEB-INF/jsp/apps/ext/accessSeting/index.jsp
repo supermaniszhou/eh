@@ -72,7 +72,7 @@
             id: 'memberTableId'
             , elem: '#memberTable'
             , url: '/seeyon/ext/accessSetting.do?method=getMemberByDepartmentId'
-            , height: 460
+            , height: 450
             , page: true //开启分页
             , limit: 10
             , cols: [[ //表头
@@ -100,7 +100,8 @@
             table.reload('memberTableId', {
                 where: {
                     departmentId: $("#deptid").val().toString(),
-                    name: $("#memberInput").val()
+                    name: $("#memberInput").val(),
+                    page:1
                 }
             });
         });
@@ -138,7 +139,7 @@
             table.reload('memberTableId', {
                 where: {
                     departmentId: id.toString(),
-                    name: ""
+                    name: "",
                 }
             });
 
