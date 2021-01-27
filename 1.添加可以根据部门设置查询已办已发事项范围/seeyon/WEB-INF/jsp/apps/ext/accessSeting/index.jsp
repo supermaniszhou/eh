@@ -32,7 +32,7 @@
 </head>
 <body>
 <div class="content_wrap">
-    <div id="nav" style="border: 1px solid #90d7bb;margin-left: 10px;">
+    <div id="nav" style="border: 1px solid #90d7bb;margin-left: 10px;overflow-y: auto;">
         <ul id="treeDemo" class="ztree"></ul>
     </div>
     <div style="margin-left: 10px;border: 1px solid #90d7bb;float: left;width: 72%;height: 90%;background-color: #fdfffd;">
