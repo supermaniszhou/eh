@@ -89,19 +89,19 @@ public class AccessSetingDaoImpl implements AccessSetingDao {
             String key = entry.getKey();
             String value = (String) entry.getValue();
             if ("accountId".equals(key)) {
-                if (!"".equals(value)) {
+                if (!"".equals(value) &&  null != value) {
                     sql.append(" and s.ORG_ACCOUNT_ID =" + value);
                 }
             }
             if ("name".equals(key)) {
-                if (!"".equals(value)) {
+                if (!"".equals(value) &&  null != value) {
                     sql.append(" and s.name like '%" + value + "%'");
                 }
             }
             if ("departmentId".equals(key)) {
-//                if (!"".equals(value)) {
+                if (!"".equals(value) &&  null != value) {
                     sql.append(" and s.ORG_DEPARTMENT_ID = " + value);
-//                }
+                }
             }
 
         }
