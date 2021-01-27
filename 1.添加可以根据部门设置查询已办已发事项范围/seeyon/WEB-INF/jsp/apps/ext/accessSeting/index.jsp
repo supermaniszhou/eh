@@ -48,7 +48,7 @@
                 <input type="hidden" id="deptid"/>
                 <input type="text" id="memberInput" name="username" lay-verify="title"
                        autocomplete="off"
-                       placeholder="姓名" class="layui-input">
+                       placeholder="姓名/职务" class="layui-input">
             </div>
             <button class="common_button" id="queryMember">查询</button>
 <%--            <button class="common_button" id="queryAll">显示所有</button>--%>

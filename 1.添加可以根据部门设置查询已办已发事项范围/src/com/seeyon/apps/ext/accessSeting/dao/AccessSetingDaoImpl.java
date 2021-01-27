@@ -99,7 +99,7 @@ public class AccessSetingDaoImpl implements AccessSetingDao {
             }
             if ("name".equals(key)) {
                 if (!"".equals(value) && null != value) {
-                    sql.append(" and s.name like '%" + value + "%'");
+                    sql.append(" and (s.name like '%" + value + "%' or s.levelname like '%"+value+"%')");
                 }
             }
             if ("departmentId".equals(key)) {
