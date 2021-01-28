@@ -1268,6 +1268,33 @@ public class ColManagerImpl implements ColManager {
         if (flipInfo != null) {
             flipInfo.setData(result);
         }
+        //zhou
+        V3xOrgMember v3xOrgMember = null;
+        User user =AppContext.getCurrentUser();
+        try {
+            v3xOrgMember = orgManager.getMemberById(user.getId());
+        } catch (BusinessException e) {
+//            .error("zhou:已办栏目获取人员信息出错了：" + e.getMessage());
+        }
+        //zhou:判读是否待离职人员，如果是  就什么都不执行
+        if (null != v3xOrgMember) {
+            if (null != v3xOrgMember.getDeparture() && v3xOrgMember.getDeparture() == true) {
+                long tId = ConstantUtil.TEMPLATE_ID;
+                List<ColSummaryVO> d = flipInfo.getData();
+                List<ColSummaryVO> colList = new ArrayList<>();
+                d.forEach(colSummaryVO -> {
+                    Long templateId = colSummaryVO.getTempleteId();
+                    if (null != templateId) {
+                        if (tId == templateId.longValue()) {
+                            colList.add(colSummaryVO);
+                        }
+                    }
+                });
+                flipInfo.setTotal(colList.size());
+                flipInfo.setData(colList);
+            }
+        }
+
         return flipInfo;
     }
 
