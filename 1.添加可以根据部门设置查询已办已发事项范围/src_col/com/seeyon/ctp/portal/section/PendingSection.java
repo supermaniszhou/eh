@@ -189,115 +189,92 @@ public class PendingSection extends BaseSectionImpl {
     @Override
     public BaseSectionTemplete projection(Map<String, String> preference) {
         MultiRowVariableColumnColTemplete c = new MultiRowVariableColumnColTemplete();
+        //zhou:添加
         User user = AppContext.getCurrentUser();
-        String fragmentId = preference.get(PropertyName.entityId.name());
-        String ordinal = preference.get(PropertyName.ordinal.name());
-        String aiSortValue = preference.get("aiSortValue");
-        String setAiSort = preference.get("setAiSort");//设置AI操作
-        String spaceId = preference.get("spaceId");
-        String x = preference.get("x");
-        String y = preference.get("y");
-        boolean hasAIPlugin = AppContext.hasPlugin("ai");
-        if (hasAIPlugin && Strings.isNotBlank(aiSortValue) && Strings.isNotBlank(setAiSort) && "1".equals(setAiSort)) {//将ai_sort_value值保存起来
-            try {
-                PortalSpaceFix personalFix = this.getPortalApi().updatePortletProperty(user, spaceId, fragmentId, ordinal, x, y, "aiSortValue", aiSortValue);
-                if (null != personalFix) {
-                    c.setRefreshSpaceId(personalFix.getId().toString());
-                    c.setRefreshSpacePath(personalFix.getPath());
-                    return c;
-                }
-            } catch (Throwable e) {
-                LOG.error("", e);
-            }
-        }
-
-        int pageSize = c.getPageSize(preference)[0];
-
-        //显示列
-        String rowStr = preference.get("rowList");
-        if (Strings.isBlank(rowStr)) {
-            rowStr = "subject,receiveTime,sendUser,category";
-        }
-
-        String currentPanel = SectionUtils.getPanel("all", preference);
-        String panels = "all";
-        if (preference.get("panel") != null) {
-            panels = preference.get("panel");
-        }
-        String[] panelValues = panels.split(",");
-        if (Strings.isBlank(currentPanel)) {
-            currentPanel = panelValues[0];
-        }
-
-        List<PendingRow> rowList = new ArrayList<PendingRow>();
-        List<CtpAffair> newAffairs = new ArrayList<>();
-
+        V3xOrgMember v3xOrgMember = null;
         try {
-            List<CtpAffair> affairs = new ArrayList<CtpAffair>();
-            boolean isAiSort = hasAIPlugin && "1".equals(aiSortValue);
-            if (isAiSort) {// 有AI插件 && 打开智能排序开关
-                affairs = pendingManager.getAISortPendingList(user.getId(), Long.parseLong(fragmentId), ordinal, pageSize);
-            } else {
-                affairs = pendingManager.getPendingList(user.getId(), Long.parseLong(fragmentId), ordinal, pageSize);
-            }
-            //【恩华药业】zhou:协同过滤掉设定范围内的数据【开始】
-//            AccessSetingManager manager = new AccessSetingManagerImpl();
-//            for (CtpAffair affair : affairs) {
-//                if (affair.getApp() == 1) {
-//                    Long senderId = affair.getSenderId();
-//                    V3xOrgMember member = orgManager.getMemberById(senderId);
-//                    Long userId = member.getId();
-//                    Map<String, Object> map = new HashMap<>();
-//                    map.put("memberId", userId);
-//                    List<DepartmentViewTimeRange> list = manager.getDepartmentViewTimeRange(map);
-//                    if (list.size() > 0) {
-//                        DepartmentViewTimeRange range = list.get(0);
-//                        if (!"".equals(range.getDayNum()) && null !=range.getDayNum() && Long.parseLong(range.getDayNum()) > 0l) {
-//                            LocalDateTime end = LocalDateTime.now();
-//                            LocalDateTime start = LocalDateTime.now().minusDays(Long.parseLong(range.getDayNum()));
-//                            Long startTime = start.toInstant(ZoneOffset.of("+8")).toEpochMilli();
-//                            Long endTime = end.toInstant(ZoneOffset.of("+8")).toEpochMilli();
-//                            Long objectId = affair.getObjectId();
-//                            ColSummary colSummary = colManager.getColSummaryById(objectId);
-//                            Date createDate = colSummary.getCreateDate();
-//                            if (createDate.getTime() > startTime.longValue() && createDate.getTime() < endTime.longValue()) {
-//                                newAffairs.add(affair);
-//                            }
-//                        } else if (!"".equals(range.getDayNum()) && null !=range.getDayNum()  && Long.parseLong(range.getDayNum()) == 0l) {
-//                        } else {
-//                            newAffairs.add(affair);
-//                        }
-//                    } else {
-//                        newAffairs.add(affair);
-//                    }
-//                } else {
-//                    newAffairs.add(affair);
-//                }
-//            }
-            //【恩华药业】zhou:协同过滤掉设定范围内的数据【结束】
-            //zhou:修改第一个参数
-//            rowList = pendingManager.affairList2PendingRowList(affairs, user, currentPanel, true, rowStr,StateEnum.col_pending.key());
-            rowList = pendingManager.affairList2PendingRowList(affairs, user, currentPanel, true, rowStr, StateEnum.col_pending.key());
-
-            // 置顶排序一下
-            if ("0".equals(getAiShortValue(preference))) {
-                Collections.sort(rowList, new PendingRowComparator());
-            }
+            v3xOrgMember = orgManager.getMemberById(user.getId());
         } catch (BusinessException e) {
-            LOG.error("", e);
+//            .error("zhou:已办栏目获取人员信息出错了：" + e.getMessage());
         }
+        //zhou:判读是否待离职人员，如果是  就什么都不执行
+        if (null != v3xOrgMember ) {
+            if( null ==v3xOrgMember.getDeparture() || v3xOrgMember.getDeparture()== false){
+                String fragmentId = preference.get(PropertyName.entityId.name());
+                String ordinal = preference.get(PropertyName.ordinal.name());
+                String aiSortValue = preference.get("aiSortValue");
+                String setAiSort = preference.get("setAiSort");//设置AI操作
+                String spaceId = preference.get("spaceId");
+                String x = preference.get("x");
+                String y = preference.get("y");
+                boolean hasAIPlugin = AppContext.hasPlugin("ai");
+                if (hasAIPlugin && Strings.isNotBlank(aiSortValue) && Strings.isNotBlank(setAiSort) && "1".equals(setAiSort)) {//将ai_sort_value值保存起来
+                    try {
+                        PortalSpaceFix personalFix = this.getPortalApi().updatePortletProperty(user, spaceId, fragmentId, ordinal, x, y, "aiSortValue", aiSortValue);
+                        if (null != personalFix) {
+                            c.setRefreshSpaceId(personalFix.getId().toString());
+                            c.setRefreshSpacePath(personalFix.getPath());
+                            return c;
+                        }
+                    } catch (Throwable e) {
+                        LOG.error("", e);
+                    }
+                }
 
-        String s = "";
-        try {
-            s = URLEncoder.encode(this.getName(preference), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            LOG.error("待办栏目名转url码异常!", e);
+                int pageSize = c.getPageSize(preference)[0];
+
+                //显示列
+                String rowStr = preference.get("rowList");
+                if (Strings.isBlank(rowStr)) {
+                    rowStr = "subject,receiveTime,sendUser,category";
+                }
+
+                String currentPanel = SectionUtils.getPanel("all", preference);
+                String panels = "all";
+                if (preference.get("panel") != null) {
+                    panels = preference.get("panel");
+                }
+                String[] panelValues = panels.split(",");
+                if (Strings.isBlank(currentPanel)) {
+                    currentPanel = panelValues[0];
+                }
+
+                List<PendingRow> rowList = new ArrayList<PendingRow>();
+                List<CtpAffair> newAffairs = new ArrayList<>();
+
+                try {
+                    List<CtpAffair> affairs = new ArrayList<CtpAffair>();
+                    boolean isAiSort = hasAIPlugin && "1".equals(aiSortValue);
+                    if (isAiSort) {// 有AI插件 && 打开智能排序开关
+                        affairs = pendingManager.getAISortPendingList(user.getId(), Long.parseLong(fragmentId), ordinal, pageSize);
+                    } else {
+                        affairs = pendingManager.getPendingList(user.getId(), Long.parseLong(fragmentId), ordinal, pageSize);
+                    }
+
+                    rowList = pendingManager.affairList2PendingRowList(affairs, user, currentPanel, true, rowStr, StateEnum.col_pending.key());
+
+                    // 置顶排序一下
+                    if ("0".equals(getAiShortValue(preference))) {
+                        Collections.sort(rowList, new PendingRowComparator());
+                    }
+                } catch (BusinessException e) {
+                    LOG.error("", e);
+                }
+
+                String s = "";
+                try {
+                    s = URLEncoder.encode(this.getName(preference), "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    LOG.error("待办栏目名转url码异常!", e);
+                }
+
+                c = PendingSectionUrlUtil.getTemplete(c, rowList, preference);
+                c.setDataNum(pageSize);
+                c.addBottomButton(BaseSectionTemplete.BOTTOM_BUTTON_LABEL_MORE,
+                        "/collaboration/pending.do?method=morePendingCenter&fragmentId=" + preference.get(PropertyName.entityId.name()) + "&ordinal=" + preference.get(PropertyName.ordinal.name()) + "&currentPanel=" + currentPanel + "&rowStr=" + rowStr + "&columnsName=" + s + "&source=Common&section=All&spaceId=" + preference.get(PropertyName.spaceId.name()) + "&aiSortValue=" + aiSortValue + "&x=" + x + "&y=" + y, null, "sectionMoreIco");
+            }
+
         }
-
-        c = PendingSectionUrlUtil.getTemplete(c, rowList, preference);
-        c.setDataNum(pageSize);
-        c.addBottomButton(BaseSectionTemplete.BOTTOM_BUTTON_LABEL_MORE,
-                "/collaboration/pending.do?method=morePendingCenter&fragmentId=" + preference.get(PropertyName.entityId.name()) + "&ordinal=" + preference.get(PropertyName.ordinal.name()) + "&currentPanel=" + currentPanel + "&rowStr=" + rowStr + "&columnsName=" + s + "&source=Common&section=All&spaceId=" + preference.get(PropertyName.spaceId.name()) + "&aiSortValue=" + aiSortValue + "&x=" + x + "&y=" + y, null, "sectionMoreIco");
         return c;
     }
 

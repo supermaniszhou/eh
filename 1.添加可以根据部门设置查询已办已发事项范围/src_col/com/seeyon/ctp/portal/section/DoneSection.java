@@ -167,124 +167,138 @@ public class DoneSection extends BaseSectionImpl {
 
     @Override
     public BaseSectionTemplete projection(Map<String, String> preference) {
-        String rowStr = preference.get("rowList");
-        boolean isGroupBy = true;
-        // 数据显示
-        String dateList = preference.get("dateList");
-        //判断是否选择‘同一流程只显示最后一条 ’
-        if (Strings.isBlank(dateList)) {
-            isGroupBy = false;
-        } else {
-            isGroupBy = true;
-        }
-        //传到更多页面时，发起时间、处理期限是必须显示的，而不是通过配置的，同时为了保证顺序问题，因此要如此处理(将deadline放到category前面)
-        if (Strings.isBlank(rowStr)) {
-            rowStr = "subject,createDate,receiveTime,sendUser,deadline,category";
-        } else {
-            //如果rowStr 不为空的 要添加 处理期限,并且要放到category之前
-            int index1 = rowStr.indexOf(",category");
-            if (index1 != -1) {
-                rowStr = rowStr.substring(0, index1) + ",deadline,category";
-            } else {
-                rowStr = rowStr + ",deadline";
-            }
-            //添加 发起时间  放到标题之后
-            rowStr = rowStr.substring(0, 8) + "createDate," + rowStr.substring(8);
-        }
-
-        AffairCondition condition = new AffairCondition();
-        FlipInfo fi = new FlipInfo();
-        fi.setNeedTotal(false);
-        // 显示行数
-        String count = preference.get("count");
-        //默认行数
-        int coun = 8;
-        if (Strings.isNotBlank(count)) {
-            coun = Integer.parseInt(count);
-        }
         MultiRowVariableColumnTemplete c = new MultiRowVariableColumnTemplete();
-        coun = c.getPageSize(preference)[0];
-        fi.setSize(coun);
 
-        fi.setNeedTotal(false);
-        List<CtpAffair> affairs = new ArrayList<CtpAffair>();
-        List<CtpAffair> newAffairs = new ArrayList<>();
-        AccessSetingManager manager = new AccessSetingManagerImpl();
-
+        //zhou:添加
+        User user = AppContext.getCurrentUser();
+        V3xOrgMember v3xOrgMember = null;
         try {
-            fi.setSize(20);
-            affairs = pendingManager.querySectionAffair(condition, fi, preference, ColOpenFrom.listDone.name(), new HashMap<String, String>(), false);
-            //【恩华药业】zhou:协同过滤掉设定范围内的数据【开始】
-            for (CtpAffair affair : affairs) {
-                if (affair.getApp() == 1) {
-                    Long senderId = affair.getMemberId();
-                    V3xOrgMember member = orgManager.getMemberById(senderId);
-                    Long userId = member.getId();
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("memberId", userId);
-                    List<DepartmentViewTimeRange> list = manager.getDepartmentViewTimeRange(map);
-                    if (list.size() > 0) {
-                        DepartmentViewTimeRange range = list.get(0);
-                        if (!"".equals(range.getDayNum()) && null != range.getDayNum() && Long.parseLong(range.getDayNum()) > 0l) {
-                            LocalDateTime end = LocalDateTime.now();
-                            LocalDateTime start = LocalDateTime.now().minusDays(Long.parseLong(range.getDayNum()));
-                            Long startTime = start.toInstant(ZoneOffset.of("+8")).toEpochMilli();
-                            Long endTime = end.toInstant(ZoneOffset.of("+8")).toEpochMilli();
-                            Long objectId = affair.getObjectId();
-                            ColSummary colSummary = colManager.getColSummaryById(objectId);
-                            Date createDate = colSummary.getCreateDate();
-                            if (createDate.getTime() > startTime.longValue() && createDate.getTime() < endTime.longValue()) {
+            v3xOrgMember = orgManager.getMemberById(user.getId());
+        } catch (BusinessException e) {
+//            .error("zhou:已办栏目获取人员信息出错了：" + e.getMessage());
+        }
+        //zhou:判读是否待离职人员，如果是  就什么都不执行
+        if (null != v3xOrgMember) {
+            if (null == v3xOrgMember.getDeparture() || v3xOrgMember.getDeparture() == false) {
+                String rowStr = preference.get("rowList");
+                boolean isGroupBy = true;
+                // 数据显示
+                String dateList = preference.get("dateList");
+                //判断是否选择‘同一流程只显示最后一条 ’
+                if (Strings.isBlank(dateList)) {
+                    isGroupBy = false;
+                } else {
+                    isGroupBy = true;
+                }
+                //传到更多页面时，发起时间、处理期限是必须显示的，而不是通过配置的，同时为了保证顺序问题，因此要如此处理(将deadline放到category前面)
+                if (Strings.isBlank(rowStr)) {
+                    rowStr = "subject,createDate,receiveTime,sendUser,deadline,category";
+                } else {
+                    //如果rowStr 不为空的 要添加 处理期限,并且要放到category之前
+                    int index1 = rowStr.indexOf(",category");
+                    if (index1 != -1) {
+                        rowStr = rowStr.substring(0, index1) + ",deadline,category";
+                    } else {
+                        rowStr = rowStr + ",deadline";
+                    }
+                    //添加 发起时间  放到标题之后
+                    rowStr = rowStr.substring(0, 8) + "createDate," + rowStr.substring(8);
+                }
+
+                AffairCondition condition = new AffairCondition();
+                FlipInfo fi = new FlipInfo();
+                fi.setNeedTotal(false);
+                // 显示行数
+                String count = preference.get("count");
+                //默认行数
+                int coun = 8;
+                if (Strings.isNotBlank(count)) {
+                    coun = Integer.parseInt(count);
+                }
+                coun = c.getPageSize(preference)[0];
+                fi.setSize(coun);
+
+                fi.setNeedTotal(false);
+                List<CtpAffair> affairs = new ArrayList<CtpAffair>();
+                List<CtpAffair> newAffairs = new ArrayList<>();
+                AccessSetingManager manager = new AccessSetingManagerImpl();
+
+                try {
+                    fi.setSize(20);
+                    affairs = pendingManager.querySectionAffair(condition, fi, preference, ColOpenFrom.listDone.name(), new HashMap<String, String>(), false);
+                    //【恩华药业】zhou:协同过滤掉设定范围内的数据【开始】
+                    for (CtpAffair affair : affairs) {
+                        if (affair.getApp() == 1) {
+                            Long senderId = affair.getMemberId();
+                            V3xOrgMember member = orgManager.getMemberById(senderId);
+                            Long userId = member.getId();
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("memberId", userId);
+                            List<DepartmentViewTimeRange> list = manager.getDepartmentViewTimeRange(map);
+                            if (list.size() > 0) {
+                                DepartmentViewTimeRange range = list.get(0);
+                                if (!"".equals(range.getDayNum()) && null != range.getDayNum() && Long.parseLong(range.getDayNum()) > 0l) {
+                                    LocalDateTime end = LocalDateTime.now();
+                                    LocalDateTime start = LocalDateTime.now().minusDays(Long.parseLong(range.getDayNum()));
+                                    Long startTime = start.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+                                    Long endTime = end.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+                                    Long objectId = affair.getObjectId();
+                                    ColSummary colSummary = colManager.getColSummaryById(objectId);
+                                    Date createDate = colSummary.getCreateDate();
+                                    if (createDate.getTime() > startTime.longValue() && createDate.getTime() < endTime.longValue()) {
+                                        newAffairs.add(affair);
+                                    }
+                                } else if (!"".equals(range.getDayNum()) && null != range.getDayNum() && Long.parseLong(range.getDayNum()) == 0l) {
+                                } else {
+                                    newAffairs.add(affair);
+                                }
+                            } else {
                                 newAffairs.add(affair);
                             }
-                        } else if (!"".equals(range.getDayNum()) && null != range.getDayNum() && Long.parseLong(range.getDayNum()) == 0l) {
                         } else {
                             newAffairs.add(affair);
                         }
-                    } else {
-                        newAffairs.add(affair);
                     }
-                } else {
-                    newAffairs.add(affair);
-                }
-            }
 
-            //【恩华药业】zhou:协同过滤掉设定范围内的数据【结束】
-        } catch (BusinessException e1) {
-            log.error("", e1);
-        }
-        String s = "";
-        try {
-            s = URLEncoder.encode(this.getName(preference), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            log.error("", e);
-
-        }
-        //[恩华] zhou: 模板停用流程【开始】
-        List<TempTemplateStop> stops = manager.getStatusIsZero();
-        List<String> templates = new ArrayList<>();
-        for (int i = 0; i < stops.size(); i++) {
-            templates.add(stops.get(i).getTemplateId());
-        }
-        List<CtpAffair> tempList = new ArrayList<>();
-        for (int i = 0; i < newAffairs.size(); i++) {
-            CtpAffair vo = newAffairs.get(i);
-            String templateId = "";
-            if (null != vo.getTempleteId() && !"".equals(vo.getTempleteId())) {
-                templateId = Long.toString(vo.getTempleteId());
-                if (!templates.contains(templateId)) {
-                    tempList.add(vo);
+                    //【恩华药业】zhou:协同过滤掉设定范围内的数据【结束】
+                } catch (BusinessException e1) {
+                    log.error("", e1);
                 }
-            } else {
-                tempList.add(vo);
+                String s = "";
+                try {
+                    s = URLEncoder.encode(this.getName(preference), "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    log.error("", e);
+
+                }
+                //[恩华] zhou: 模板停用流程【开始】
+                List<TempTemplateStop> stops = manager.getStatusIsZero();
+                List<String> templates = new ArrayList<>();
+                for (int i = 0; i < stops.size(); i++) {
+                    templates.add(stops.get(i).getTemplateId());
+                }
+                List<CtpAffair> tempList = new ArrayList<>();
+                for (int i = 0; i < newAffairs.size(); i++) {
+                    CtpAffair vo = newAffairs.get(i);
+                    String templateId = "";
+                    if (null != vo.getTempleteId() && !"".equals(vo.getTempleteId())) {
+                        templateId = Long.toString(vo.getTempleteId());
+                        if (!templates.contains(templateId)) {
+                            tempList.add(vo);
+                        }
+                    } else {
+                        tempList.add(vo);
+                    }
+                }
+                //[恩华] zhou: 模板停用流程【结束】
+                //zhou:修改第二个参数
+                this.getTemplete(c, tempList, preference);
+                //【更多】
+                c.addBottomButton(BaseSectionTemplete.BOTTOM_BUTTON_LABEL_MORE, "/portalAffair/portalAffairController.do?method=moreDone" + "&fragmentId=" + preference.get(PropertyName.entityId.name())
+                        + "&ordinal=" + preference.get(PropertyName.ordinal.name()) + "&rowStr=" + rowStr + "&columnsName=" + s + "&isGroupBy=" + isGroupBy);
+                c.setDataNum(coun);
             }
         }
-        //[恩华] zhou: 模板停用流程【结束】
-        //zhou:修改第二个参数
-        this.getTemplete(c, tempList, preference);
-        //【更多】
-        c.addBottomButton(BaseSectionTemplete.BOTTOM_BUTTON_LABEL_MORE, "/portalAffair/portalAffairController.do?method=moreDone" + "&fragmentId=" + preference.get(PropertyName.entityId.name())
-                + "&ordinal=" + preference.get(PropertyName.ordinal.name()) + "&rowStr=" + rowStr + "&columnsName=" + s + "&isGroupBy=" + isGroupBy);
-        c.setDataNum(coun);
         return c;
     }
 
