@@ -170,7 +170,7 @@ public class DoneSection extends BaseSectionImpl {
         MultiRowVariableColumnTemplete c = new MultiRowVariableColumnTemplete();
 
 
-        //zhou:添加
+        //zhou:添加--
         User user = AppContext.getCurrentUser();
         V3xOrgMember v3xOrgMember = null;
         try {

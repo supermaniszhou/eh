@@ -3,7 +3,7 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="5cbc518b-adfd-4f83-882f-afb4c91114af" name="已办已发权限设置" url="http://localhost">
-        <fileTransfer port="0" mountedRoot="F:\Seeyon\A87.1_sp1_2\ApacheJetspeed\webapps\seeyon" accessType="MOUNT" />
+        <fileTransfer mountedRoot="C:\Seeyon\A8\ApacheJetspeed\webapps\seeyon" accessType="MOUNT" port="0" />
       </webServer>
     </option>
   </component>
