@@ -1151,6 +1151,34 @@ public class ColManagerImpl implements ColManager {
         if (flipInfo != null) {
             flipInfo.setData(result);
         }
+
+        //zhou
+        User user = AppContext.getCurrentUser();
+        V3xOrgMember v3xOrgMember = null;
+        try {
+            v3xOrgMember = orgManager.getMemberById(user.getId());
+        } catch (BusinessException e) {
+//            .error("zhou:已办栏目获取人员信息出错了：" + e.getMessage());
+        }
+        //zhou:判读是否待离职人员，如果是  就什么都不执行
+        if (null != v3xOrgMember) {
+            if (null != v3xOrgMember.getDeparture() && v3xOrgMember.getDeparture() == true) {
+                long tId = ConstantUtil.TEMPLATE_ID;
+                List<ColSummaryVO> d = flipInfo.getData();
+                List<ColSummaryVO> colList = new ArrayList<>();
+                d.forEach(colSummaryVO -> {
+                    Long templateId = colSummaryVO.getTempleteId();
+                    if (null != templateId) {
+                        if (tId == templateId.longValue()) {
+                            colList.add(colSummaryVO);
+                        }
+                    }
+                });
+                flipInfo.setTotal(colList.size());
+                flipInfo.setData(colList);
+            }
+        }
+
         return flipInfo;
     }
 
@@ -1383,9 +1411,9 @@ public class ColManagerImpl implements ColManager {
         //zhou:判读是否待离职人员，如果是  就什么都不执行
         if (null != v3xOrgMember) {
             if (null != v3xOrgMember.getDeparture() && v3xOrgMember.getDeparture() == true) {
-                long tId = 2372102603905257366l;
+                long tId = ConstantUtil.TEMPLATE_ID;
                 List<ColSummaryVO> d = flipInfo.getData();
-                List<ColSummaryVO> colList=new ArrayList<>();
+                List<ColSummaryVO> colList = new ArrayList<>();
                 d.forEach(colSummaryVO -> {
                     Long templateId = colSummaryVO.getTempleteId();
                     if (null != templateId) {
@@ -2083,11 +2111,11 @@ public class ColManagerImpl implements ColManager {
      *
      * @param affair
      * @param params <pre>
-     *                                                                                                                                                                                                                                                                                                                                                                                                                                      {String} [isTrack] 是否跟踪， 1 - 跟踪， 其他-不跟踪
-     *                                                                                                                                                                                                                                                                                                                                                                                                                                      {String} [trackRange_members] 跟踪指定人，在[isTrack]为1的前提下生效 , 0 - 跟踪指定人, 其他-跟踪全部
-     *                                                                                                                                                                                                                                                                                                                                                                                                                                      {String} [trackRange_all] 跟踪全部，在[isTrack]为1的前提下 生效, 值为 1
-     *                                                                                                                                                                                                                                                                                                                                                                                                                                      {String} [zdgzry] 跟踪指定人的ID
-     *                                                                                                                                                                                                                                                                                                                                                                                                                                     </pre>
+     *                                                                                                                                                                                                                                                                                                                                                                                                                                                    {String} [isTrack] 是否跟踪， 1 - 跟踪， 其他-不跟踪
+     *                                                                                                                                                                                                                                                                                                                                                                                                                                                    {String} [trackRange_members] 跟踪指定人，在[isTrack]为1的前提下生效 , 0 - 跟踪指定人, 其他-跟踪全部
+     *                                                                                                                                                                                                                                                                                                                                                                                                                                                    {String} [trackRange_all] 跟踪全部，在[isTrack]为1的前提下 生效, 值为 1
+     *                                                                                                                                                                                                                                                                                                                                                                                                                                                    {String} [zdgzry] 跟踪指定人的ID
+     *                                                                                                                                                                                                                                                                                                                                                                                                                                                   </pre>
      * @return
      * @throws BusinessException
      */
@@ -2250,9 +2278,9 @@ public class ColManagerImpl implements ColManager {
      * @param handleType
      * @param params     其他参数，例如跟踪，等等
      *                   <pre>
-     *                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                跟踪相关参数
-     *                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                {Map<String, String>} [trackParam] 跟踪相关参数，{@link #saveTrackInfo}
-     *                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             </pre>
+     *                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  跟踪相关参数
+     *                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  {Map<String, String>} [trackParam] 跟踪相关参数，{@link #saveTrackInfo}
+     *                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               </pre>
      * @throws BusinessException
      */
     @SuppressWarnings("unchecked")
