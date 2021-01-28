@@ -190,6 +190,7 @@ public class PendingSection extends BaseSectionImpl {
     public BaseSectionTemplete projection(Map<String, String> preference) {
         MultiRowVariableColumnColTemplete c = new MultiRowVariableColumnColTemplete();
         //zhou:添加
+
         User user = AppContext.getCurrentUser();
         V3xOrgMember v3xOrgMember = null;
         try {
