@@ -863,6 +863,8 @@
             $("#btnArea").enable();
             $(".calendar_icon_area").show();
             $("input[type='radio'][name='enabled'][value='true']").prop("checked", "checked");
+            //zhou:是否待离职
+            $("input[type='radio'][name='departure'][value='false']").prop("checked", "checked");
             $("#sortIdtype1").prop("checked", "checked");
             if ("" !== preDeptId) {
                 $("#orgDepartmentId").val(preDeptId);
