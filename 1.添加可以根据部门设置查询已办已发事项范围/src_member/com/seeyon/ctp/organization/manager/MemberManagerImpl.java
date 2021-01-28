@@ -657,6 +657,14 @@ public class MemberManagerImpl implements MemberManager {
         Long currentAccountId = Long.parseLong(accountId);
         User user = AppContext.getCurrentUser();
         V3xOrgMember member = new V3xOrgMember();
+        //zhou:是否待离职
+        String flag = (String) map.get("departure");
+        if (flag != null && ("true").equals(flag)) {
+            member.setDeparture(true);
+        } else {
+            member.setDeparture(false);
+        }
+
         ParamUtil.mapToBean(map, member, false);
         if (null == map.get("birthday")
                 || Strings.isBlank((String) map.get("birthday"))) {
