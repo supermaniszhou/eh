@@ -1697,7 +1697,7 @@ public class ColDaoImpl extends BaseHibernateDao<ColSummary> implements ColDao {
         agentMemberHql.append(childrenHql3);
         headHql.append(agentMemberHql);
         hql.append(headHql.append(endHql));
-        System.out.println(hql);
+//        System.out.println(hql);
     }
 
     @Override
