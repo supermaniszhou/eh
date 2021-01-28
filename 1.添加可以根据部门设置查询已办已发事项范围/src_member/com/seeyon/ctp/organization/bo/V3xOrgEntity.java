@@ -197,6 +197,16 @@ public abstract class V3xOrgEntity extends com.seeyon.ctp.util.ObjectToXMLBase i
     public static final String TOXML_PROPERTY_Mobile = "M";
 
     //Field
+    //zhou
+    protected Boolean departure=false;
+
+    public Boolean getDeparture() {
+        return departure;
+    }
+
+    public void setDeparture(Boolean departure) {
+        this.departure = departure;
+    }
 
     protected Long orgAccountId;
 

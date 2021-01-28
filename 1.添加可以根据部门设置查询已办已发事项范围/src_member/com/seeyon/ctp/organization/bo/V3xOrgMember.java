@@ -79,6 +79,18 @@ public class V3xOrgMember extends V3xOrgEntity implements Serializable {
     private String pinyinhead;
     private boolean isVisitor = false;//是否为访客
 
+    private Boolean departure=false;
+
+    @Override
+    public Boolean getDeparture() {
+        return departure;
+    }
+
+    @Override
+    public void setDeparture(Boolean departure) {
+        this.departure = departure;
+    }
+
     /**
      * 复制传入的实体的属性值到Member的实例。
      * @param orgMember
@@ -107,6 +119,8 @@ public class V3xOrgMember extends V3xOrgEntity implements Serializable {
         this.isVirtual = orgMember.getIsVirtual();
         this.enabled = orgMember.getEnabled();
         this.externalType = orgMember.getExternalType();
+        //zhou
+        this.departure=orgMember.getDeparture();
 
         if (orgMember.second_post != null) {
             this.second_post = new ArrayList<MemberPost>(orgMember.second_post);
@@ -232,6 +246,7 @@ public class V3xOrgMember extends V3xOrgEntity implements Serializable {
         o.setVirtual(this.isVirtual);
         o.setEnable(this.enabled);
         o.setExternalType(this.externalType);
+        o.setDeparture(this.departure);
 
         o.setExtAttr1((String) this.properties.get("EXT_ATTR_1"));
         o.setExtAttr2((String) this.properties.get("EXT_ATTR_2"));
