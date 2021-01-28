@@ -17,7 +17,8 @@ public class OrgMember extends BasePO {
 
     private Boolean _departure;
 
-    public Boolean getDeparture() {
+
+    public Boolean isDeparture() {
         return this._departure;
     }
 

@@ -79,7 +79,7 @@ public class V3xOrgMember extends V3xOrgEntity implements Serializable {
     private String pinyinhead;
     private boolean isVisitor = false;//是否为访客
 
-    private Boolean departure=false;
+    private Boolean departure=null;
 
     @Override
     public Boolean getDeparture() {
@@ -170,6 +170,8 @@ public class V3xOrgMember extends V3xOrgEntity implements Serializable {
         this.externalType = orgMember.getExternalType();
         this.pinyin = this.getPinyin();
         this.pinyinhead = this.getPinyinhead();
+        //zhou
+        this.departure=orgMember.isDeparture();
 
         this.properties.put("EXT_ATTR_1", orgMember.getExtAttr1());
         this.properties.put("EXT_ATTR_2", orgMember.getExtAttr2());
@@ -246,6 +248,7 @@ public class V3xOrgMember extends V3xOrgEntity implements Serializable {
         o.setVirtual(this.isVirtual);
         o.setEnable(this.enabled);
         o.setExternalType(this.externalType);
+        //zhou
         o.setDeparture(this.departure);
 
         o.setExtAttr1((String) this.properties.get("EXT_ATTR_1"));
