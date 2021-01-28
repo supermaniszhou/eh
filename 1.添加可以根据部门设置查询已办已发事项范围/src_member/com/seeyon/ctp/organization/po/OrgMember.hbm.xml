@@ -491,6 +491,14 @@
       not-null="false"
       length="14"
     />
+<!--    zhou-->
+    <property
+            name="departure"
+            column="DEPARTURE"
+            type="boolean"
+            not-null="false"
+            length="14"
+    />
 
   </class>
 </hibernate-mapping>
