@@ -76,6 +76,7 @@
             , height: 450
             , page: true //开启分页
             , limit: 10
+            ,method:'post'
             , cols: [[ //表头
                 {type: 'checkbox'},
                 {field: 'subject', title: '模板名称', width: '30%', sort: true},
